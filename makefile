@@ -18,13 +18,14 @@ LDLIBS = -lwiringPi
 TARGET = p0wer
 
 
-# The compiler; typically gcc for c and g++ for c++
+#The compiler; typically gcc for c and g++ for c++
 CC = gcc
 
 
 all:
 	$(CC) $(CFLAGS) $(LDLIBS) $(TARGET).c -o $(TARGET)
 
+#Executing "make clean" will carry out the following.
 clean:
-	rm -f $(TARGET) rotaryencoder/rotaryencoder.o *.o
+	rm -f $(TARGET) *.o
 

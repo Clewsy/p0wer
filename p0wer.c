@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>		//Required for using strcmp() (string compare)
+#include <string.h>		//Required for using strlen() (returns string length)
 #include <wiringPi.h>		//Required for utilising raspberry pi gpio
 
 //define the pin numbers that corrspond to the raspi circuit.
@@ -37,7 +37,7 @@ void exit_usage(void)
 	exit(EXIT_FAILURE);
 }
 
-//This function is called to pulde the pin once the channel
+//This function is called to pulse the pin once the channel
 //and on/off setting are parsed from the arguments
 void control_outlet(int pin)
 {
@@ -57,60 +57,60 @@ int get_pin(char channel, char* on_or_off)
 	//initialise integer "set" which will become either TURN_ON (1) or TURN_OFF (0)	
 	int set;
 
-        //confirm the first character of the on_or_off string is either 'o' or 'O' for on/off
-        if(on_or_off[0] != 'o' && on_or_off[0] != 'O'){ exit_usage(); }
+	//confirm the first character of the on_or_off string is either 'o' or 'O' for on/off
+	if(on_or_off[0] != 'o' && on_or_off[0] != 'O'){ exit_usage(); }
 
-        //determine the intended contol by the second character of the string.
-        //i.e. 'n' for on or 'f' for off
-        switch(on_or_off[1])
-        {
-                case 'n' :
-                case 'N' :      //desired control is to set the channel on
+	//determine the intended contol by the second character of the string.
+	//i.e. 'n' for on or 'f' for off
+	switch(on_or_off[1])
+	{
+		case 'n' :
+		case 'N' :      //desired control is to set the channel on
 				//since the second character is 'n', confirm there is no third
 				//character.  else show syntax and exit.
 			if(on_or_off[2]){ exit_usage(); }
-                        set = TURN_ON;
-                        break;
-                case 'f' :
-                case 'F' :      //desired control is to set the channel off
-                		//since the second char is 'f', confirm the third char is also 'f'.
-                		//else show syntax and exit
-                        if(on_or_off[2] != 'f' && on_or_off[2] != 'F'){ exit_usage(); }
-                        set = TURN_OFF;
-                        break;
-                default :       //bad control argument entered.  show syntax and exit
-                        exit_usage();
-        }
+			set = TURN_ON;
+			break;
+		case 'f' :
+		case 'F' :      //desired control is to set the channel off
+				//since the second char is 'f', confirm the third char is also 'f'.
+				//else show syntax and exit
+			if(on_or_off[2] != 'f' && on_or_off[2] != 'F'){ exit_usage(); }
+			set = TURN_OFF;
+			break;
+		default :       //bad control argument entered.  show syntax and exit
+			exit_usage();
+	}
 
 	//at this point we know the "channel" variable is a single character
 	//we are expecting it to be A, a, B, b, C, c, D or d.  This block
 	//will return the value of the pin to be pulsed (according to
 	//WiringPi numbering) to give the desired control. 
-        switch(channel)
-        {
+	switch(channel)
+	{
 		case 'A' :
-                case 'a' :
-                        if (set)        { return(CHANNEL_A_ON); }
-                        else            { return(CHANNEL_A_OFF); }
-                        break;
+		case 'a' :
+			if (set)        { return(CHANNEL_A_ON); }
+			else            { return(CHANNEL_A_OFF); }
+			break;
 		case 'B' :
-                case 'b' :
-                        if (set)        { return(CHANNEL_B_ON); }
-                        else            { return(CHANNEL_B_OFF); }
-                        break;
+		case 'b' :
+			if (set)        { return(CHANNEL_B_ON); }
+			else            { return(CHANNEL_B_OFF); }
+			break;
 		case 'C' :
-                case 'c' :
-                        if (set)        { return(CHANNEL_C_ON); }
-                        else            { return(CHANNEL_C_OFF); }
-                        break;
+		case 'c' :
+			if (set)        { return(CHANNEL_C_ON); }
+			else            { return(CHANNEL_C_OFF); }
+			break;
 		case 'D' :
-                case 'd' :
-                        if (set)        { return(CHANNEL_D_ON); }
-                        else            { return(CHANNEL_D_OFF); }
-                        break;
-                default :               //unexpected char entered
-                        exit_usage();
-        }
+		case 'd' :
+			if (set)        { return(CHANNEL_D_ON); }
+			else            { return(CHANNEL_D_OFF); }
+			break;
+		default :               //unexpected char entered
+			exit_usage();
+	}
 	
 	//Should never reach this point.
 	printf("Unknown error.  Quitting.\n");

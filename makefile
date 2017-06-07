@@ -17,10 +17,8 @@ LDLIBS = -lwiringPi
 #The target executable file name
 TARGET = p0wer
 
-
 #The compiler; typically gcc for c and g++ for c++
 CC = gcc
-
 
 all:
 	$(CC) $(CFLAGS) $(LDLIBS) $(TARGET).c -o $(TARGET)

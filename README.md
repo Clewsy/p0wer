@@ -19,7 +19,7 @@ $ make all
 ```
 The binary is now ready to use.  For frequent calls it can be copied to the /usr/local/sbin directory:
 ```
-sudo cp p0wer /usr/local/sbin/p0wer
+$ sudo cp p0wer /usr/local/sbin/p0wer
 ```
 
 ## Usage:

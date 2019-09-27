@@ -1,33 +1,33 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>		//Required for using strlen() (returns string length)
-#include <wiringPi.h>		//Required for utilising raspberry pi gpio
+#include <string.h>	//Required for using strlen() (returns string length).
+#include <pigpio.h>	//Required for utilising raspberry pi gpio.
 
-//define the pin numbers that corrspond to the raspi circuit.
-//refer wiringPi documentation
-#define CHANNEL_A_ON	21
-#define CHANNEL_A_OFF	22
-#define CHANNEL_B_ON	23
-#define CHANNEL_B_OFF	24
-#define CHANNEL_C_ON	25
-#define CHANNEL_C_OFF	27
-#define CHANNEL_D_ON	28
-#define CHANNEL_D_OFF	29 
+//Define the pin numbers that corrspond to the raspi circuit.
+//The pigpio library uses the Broadcom numbering.
+#define CHANNEL_A_ON	5
+#define CHANNEL_A_OFF	6
+#define CHANNEL_B_ON	13
+#define CHANNEL_B_OFF	19
+#define CHANNEL_C_ON	26
+#define CHANNEL_C_OFF	16
+#define CHANNEL_D_ON	20
+#define CHANNEL_D_OFF	21 
 
-//assign a value for determining desired channel control when parsing arguments.
+//Assign a value for determining desired channel control when parsing arguments.
 #define TURN_OFF	0
 #define TURN_ON		1
 
-//define the name of the executable to be used when showing usage.
+//Define the name of the executable to be used when showing usage.
 #define FILENAME	"p0wer"
 
-//easier to remember definitions from the executable arguments.
+//Easier to remember definitions from the executable arguments.
 //Note, argv is an array of strings.
 #define ARG_CHANNEL	argv[1]
 #define ARG_ON_OR_OFF	argv[2]
 
-//duration in milliseconds the raspi pin will pulse to trigger the remote
-#define PULSE_DURATION	200
+//Duration in microseconds the raspi pin will pulse to trigger the remote.
+#define PULSE_DURATION	200000	//Equates to 200 milliseconds
 
 //This function is called if there is an error with the executable usage.
 //It will print to screen the correct usage then exit.
@@ -38,75 +38,76 @@ void exit_usage(void)
 }
 
 //This function is called to pulse the pin once the channel
-//and on/off setting are parsed from the arguments
+//and on/off setting are parsed from the arguments.
 void control_outlet(int pin)
 {
-	//initialise raspi to interface with gpio, exit if failure 
-	if (wiringPiSetup() < 0) { exit(EXIT_FAILURE); }
+	//Initialise raspi to interface with gpio, exit if failure. 
+	if (gpioInitialise() == PI_INIT_FAILED) { exit(EXIT_FAILURE); }
 
-	pinMode(pin, OUTPUT);		//set the pin to an output
-	pullUpDnControl(pin, PUD_DOWN);	//enable internal pull-down resistor
+	//Set the desired pin to operate as an output.
+	if (gpioSetMode(pin, PI_OUTPUT) != 0) { exit(EXIT_FAILURE); }
 
-	digitalWrite(pin, HIGH);	//pull the pin high
-	delay(PULSE_DURATION);		//pause
-	digitalWrite(pin, LOW);		//bring the pin back town low
+	//Activate a pull-down resistor on the seletced pin.
+	if (gpioSetPullUpDown(pin, PI_PUD_DOWN) != 0) { exit(EXIT_FAILURE); }
+
+	//Pulse the selected pin.
+	if (gpioWrite(pin, 1) != 0) { exit(EXIT_FAILURE); }
+	gpioDelay(PULSE_DURATION);
+	if (gpioWrite(pin, 0) != 0) { exit(EXIT_FAILURE); }
+
 }
 
 int get_pin(char channel, char* on_or_off)
 {
-	//initialise integer "set" which will become either TURN_ON (1) or TURN_OFF (0)	
+	//Initialise integer "set" which will become either TURN_ON (1) or TURN_OFF (0).	
 	int set;
 
-	//confirm the first character of the on_or_off string is either 'o' or 'O' for on/off
-	if(on_or_off[0] != 'o' && on_or_off[0] != 'O'){ exit_usage(); }
+	//Confirm the first character of the on_or_off string is either 'o' or 'O' for on/off.
+	if (on_or_off[0] != 'o' && on_or_off[0] != 'O'){ exit_usage(); }
 
-	//determine the intended contol by the second character of the string.
-	//i.e. 'n' for on or 'f' for off
-	switch(on_or_off[1])
+	//Determine the intended contol by the second character of the string.
+	//I.e. 'n' for on or 'f' for off.
+	switch (on_or_off[1])
 	{
-		case 'n' :
-		case 'N' :      //desired control is to set the channel on
-				//since the second character is 'n', confirm there is no third
-				//character.  else show syntax and exit.
+		case 'n' :	//Desired action is to set the channel on.
+		case 'N' :	//Since the second character is 'n', confirm there is no third character.
 			if(on_or_off[2]){ exit_usage(); }
 			set = TURN_ON;
 			break;
-		case 'f' :
-		case 'F' :      //desired control is to set the channel off
-				//since the second char is 'f', confirm the third char is also 'f'.
-				//else show syntax and exit
+		case 'f' :	//Desired action is to set the channel on.
+		case 'F' :	//Since the second char is 'f', confirm the third char is also 'f'.
 			if(on_or_off[2] != 'f' && on_or_off[2] != 'F'){ exit_usage(); }
 			set = TURN_OFF;
 			break;
-		default :       //bad control argument entered.  show syntax and exit
+		default :	//Bad control argument entered.  Show syntax and exit.
 			exit_usage();
 	}
 
-	//at this point we know the "channel" variable is a single character
-	//we are expecting it to be A, a, B, b, C, c, D or d.  This block
-	//will return the value of the pin to be pulsed (according to
-	//WiringPi numbering) to give the desired control. 
+	//At this point we know the "channel" variable is a single character.
+	//We are expecting it to be A, a, B, b, C, c, D or d.
+	//This block will return the value of the pin to be pulsed
+	//(according to pigpio/broadcom numbering) to give the desired control. 
 	switch(channel)
 	{
 		case 'A' :
 		case 'a' :
-			if (set)        { return(CHANNEL_A_ON); }
-			else            { return(CHANNEL_A_OFF); }
+			if (set)	{ return(CHANNEL_A_ON); }
+			else		{ return(CHANNEL_A_OFF); }
 			break;
 		case 'B' :
 		case 'b' :
-			if (set)        { return(CHANNEL_B_ON); }
-			else            { return(CHANNEL_B_OFF); }
+			if (set)	{ return(CHANNEL_B_ON); }
+			else		{ return(CHANNEL_B_OFF); }
 			break;
 		case 'C' :
 		case 'c' :
-			if (set)        { return(CHANNEL_C_ON); }
-			else            { return(CHANNEL_C_OFF); }
+			if (set)	{ return(CHANNEL_C_ON); }
+			else		{ return(CHANNEL_C_OFF); }
 			break;
 		case 'D' :
 		case 'd' :
-			if (set)        { return(CHANNEL_D_ON); }
-			else            { return(CHANNEL_D_OFF); }
+			if (set)	{ return(CHANNEL_D_ON); }
+			else		{ return(CHANNEL_D_OFF); }
 			break;
 		default :               //unexpected char entered
 			exit_usage();
@@ -117,26 +118,26 @@ int get_pin(char channel, char* on_or_off)
 	exit(EXIT_FAILURE);
 }
 
-//main program loop.  arguments (argv[]) and number of arguments (argc)
+//Main program loop.  Arguments (argv[]) and number of arguments (argc).
 int main(int argc, char* argv[])
 {
-	//do a basic syntax check.  Show syntax and exit if something unexpected.
+	//Do a basic syntax check.  Show usage and exit if something unexpected.
 
-	//first ensure the execution included the expected number of arguments
-	//(three including the executable).  else show syntax and exit.
+	//First ensure the command included the expected number of arguments
+	//(three including the executable).  Else show syntax and exit.
 	if (argc != 3)  { exit_usage(); }
 
-	//next confirm the second argument representing the desired
-	//channel is a single character.  else show syntax and exit.
+	//Next confirm the second argument representing the desired
+	//channel is a single character.  Else show syntax and exit.
 	if(strlen(ARG_CHANNEL) != 1){ exit_usage(); }
 
-	//then confirm the third argument is a string with no more than
-	//three characters.  else show syntax and exit
+	//Then confirm the third argument is a string with no more than
+	//three characters.  Else show syntax and exit.
 	if(strlen(ARG_ON_OR_OFF) > 3){ exit_usage(); }
 
-	//finally call the "get_pin" function to determine the desired pin
+	//Finally call the "get_pin" function to determine the desired pin
 	//to be pulsed, then pass it to the "control outlet" function to give
-	//the desired control
+	//the desired control action.
 	control_outlet(get_pin(ARG_CHANNEL[0], ARG_ON_OR_OFF));
 	return (EXIT_SUCCESS);
 }

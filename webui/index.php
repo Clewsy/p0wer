@@ -35,7 +35,7 @@
 			
 			$action = $_GET[$channel];							//determine how the channel should be set
 
-			exec("/bin/super_p0wer $channel $action");					//rexecute the command to set the channel
+			exec("./bin/super_p0wer $channel $action");					//execute the command to set the channel
 		?>
 	</body>
 </html>

@@ -1,0 +1,1 @@
+A copy of the "p0wer" executable should be stored within this directory for access by the webui php script.  It should be renamed to super_p0wer, owned by root and have the SUID bit set.  Refer to README.

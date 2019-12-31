@@ -1,5 +1,5 @@
 # p0wer
-Remotely control power outlets via a raspberrypi zero W interfaced with a modified off-the-shelf wireless 4-channel mains remote control.  Check the KiCad directory for the [schematic](KiCad_p0wer/p0wer_schematic.pdf).  More info can be found here: [clews.pro/projects/p0wer.html](https://clews.pro/projects/p0wer.html)
+Remotely control power outlets via a raspberrypi zero W interfaced with a modified off-the-shelf wireless 4-channel mains remote control.  Check the KiCad directory for the [schematic](KiCad_p0wer/p0wer_schematic.pdf).  More info and photos can be found here: [clews.pro/projects/p0wer.html](https://clews.pro/projects/p0wer.html)
 
 ## Installation:
 On the raspberry pi install the pigpio library:
@@ -41,14 +41,14 @@ Note, executing p0wer this way from a browser likely means the host user is www-
 ## Photo:
 Here is my hacked together rf remote and Raspberry Pi Zero W.
 
-<img src="p0wer.jpg" alt="p0wer photo" width="800" align="middle">
+<p style="text-align:center;"><img src="p0wer.jpg" alt="p0wer photo" width="800"></p>
 
 
 # WebUI:
 
 If you'd like a simple web interface to run the executable you can use the html/php/css found in the [webui](https://gitlab.com/clewsy/p0wer/tree/master/webui) directory.  Here is a screenshot of the webui on an android smartphone:
 
-<img src="p0wer_webui.png" alt="p0wer photo" width="500" align="middle">
+<p style="text-align:center;"><img src="p0wer_webui.png" alt="p0wer photo" width="500" align="middle"></p>
 
 ## p0wer WebUI Installation:
 First follow the instructions above to compile and install the executable.

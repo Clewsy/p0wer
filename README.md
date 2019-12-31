@@ -77,3 +77,16 @@ $ sudo chmod +s /var/www/html/bin/super_p0wer
 ```
 
 Your web interface should now be available over your local network.  If the hostname of your raspberry pi remains as the default, then the p0wer WebUI should be accessible from your browser at http://raspberrypi/
+
+## Bonus - run p0wer with ssh or cURL:
+
+Once the p0wer WebUI is running, it is possible to use curl to control the wireless switches.  I found this useful for controlling a lamp by a script within a docker container.  The container image did not include an installation of the ssh client but it did include curl.  The following shows equivalent ssh:curl commands on a local network that both achieve the same result on a host that has been set up as per the instructions above:
+
+* Using ssh (user "pi" on host "raspberrypi"):
+```shell
+$ ssh pi@raspberrypi "sudo p0wer a on"
+```
+* Using cURL (on host "raspberrypi"):
+```shell
+$ curl --silent http://raspberrypi/index.php?a=ON >> /dev/null
+```

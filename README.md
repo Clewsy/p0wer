@@ -57,7 +57,7 @@ To run the webui, the raspberry pi will require installation of php and also web
 
 ```shell
 $ sudo apt update
-$ sudo apt install apache php
+$ sudo apt install apache2 php
 ```
 By default, Apache will serve html/css/php files stored at /var/www/html.
 

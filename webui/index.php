@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta name="viewport" content="width=device-width" />
@@ -10,32 +11,32 @@
 				<input type="submit" value="ON" name="a">
 				A
 				<input type="submit" value="OFF" name="a">
-				</br>
+				<br />
 				<input type="submit" value="ON" name="b">
 				B
 				<input type="submit" value="OFF" name="b">
-				</br>
+				<br />
 				<input type="submit" value="ON" name="c">
 				C
 				<input type="submit" value="OFF" name="c">
-				</br>
+				<br />
 				<input type="submit" value="ON" name="d">
 				D
 				<input type="submit" value="OFF" name="d">
-			</form>​​​
+			</form>
 		</center>
-
-		<?php
-			$all_channels = array('a','b','c','d');						//define all possible channels.
-
-			for($i = 0; $i <= 3; $i++)							//run check for each possible channel
-			{
-				if(isset($_GET[$all_channels[$i]])) {$channel = $all_channels[$i];}	//check if the channel is to be set
-			}
-			
-			$action = $_GET[$channel];							//determine how the channel should be set
-
-			exec("./bin/super_p0wer $channel $action");					//execute the command to set the channel
-		?>
 	</body>
 </html>
+
+<?php
+	$all_channels = array('a','b','c','d');						//define all possible channels.
+
+	for($i = 0; $i <= 3; $i++)							//run check for each possible channel
+	{
+		if(isset($_GET[$all_channels[$i]])) {$channel = $all_channels[$i];}	//check if the channel is to be set
+	}
+			
+	$action = $_GET[$channel];							//determine how the channel should be set
+
+	exec("./bin/super_p0wer $channel $action");					//execute the command to set the channel
+?>

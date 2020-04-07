@@ -91,8 +91,8 @@ $ curl --silent http://raspberrypi/index.php?a=ON >> /dev/null
 ```
 
 [link_repo_p0wer_schematic]:https://gitlab.com/clewsy/p0wer/-/blob/master/kicad_files/p0wer_schematic.pdf
+[link_repo_p0wer_webui]:https://gitlab.com/clewsy/p0wer/tree/master/webui
 [link_repo_scripts_p0wer_switch]:https://gitlab.com/clewsy/scripts/blob/master/p0wer_switch.sh
-[link_repo_webui]:https://gitlab.com/clewsy/p0wer/tree/master/webui
 
 [link_clews_projects_p0wer]:https://clews.pro/projects/p0wer.html
 

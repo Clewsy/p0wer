@@ -1,5 +1,5 @@
 # p0wer
-Remotely control power outlets via a raspberrypi zero W interfaced with a modified off-the-shelf wireless 4-channel mains remote control.  Check the KiCad directory for the [schematic][link_repo_p0wer_schematic]).  More info and photos can be found here: [clews.pro/projects/p0wer.html][link_clews_projects_p0wer].
+Remotely control power outlets via a raspberrypi zero W interfaced with a modified off-the-shelf wireless 4-channel mains remote control.  Check the KiCad directory for the [schematic][link_repo_p0wer_schematic]).  More info and photos can be found [here][link_clews_projects_p0wer].
 
 ## Installation:
 On the raspberry pi install the pigpio library:
@@ -94,7 +94,7 @@ $ curl --silent http://raspberrypi/index.php?a=ON >> /dev/null
 [link_repo_p0wer_webui]:https://gitlab.com/clewsy/p0wer/tree/master/webui
 [link_repo_scripts_p0wer_switch]:https://gitlab.com/clewsy/scripts/blob/master/p0wer_switch.sh
 
-[link_clews_projects_p0wer]:https://clews.pro/projects/p0wer.html
+[link_clews_projects_p0wer]:https://clews.pro/projects/p0wer.php
 
 [link_web_apache]:https://httpd.apache.org/
 [link_web_nginx]:https://nginx.org/

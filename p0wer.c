@@ -55,7 +55,7 @@ int control_outlet(int pin)
 
 	//Activate a pull-down resistor on the seletced pin.
 	//Note, gpioSetPullUpDown returns 0 if OK.
-	if(gpioSetPullUpDown(pin, PI_PUD_DOWN) != 0) {return(FAILURE);}
+	if(gpioSetPullUpDown(pin, PI_PUD_DOWN)) {return(FAILURE);}
 
 	//Pulse the selected pin.
 	//Note, gpioWrite returns 0 if OK.
@@ -70,58 +70,52 @@ int control_outlet(int pin)
 
 int get_pin(char channel, char* on_or_off)
 {
-	//Initialise integer "set" which will become either TURN_ON (1) or TURN_OFF (0).	
+	//Initialise integer "set" which will become either TURN_ON (=1) or TURN_OFF (=0).	
 	int set;
 
-	//Confirm the first character of the on_or_off string is either 'o' or 'O' for on/off.
-	if(on_or_off[0] != 'o' && on_or_off[0] != 'O'){exit_usage();}
-
 	//Determine the intended contol by the second character of the string.
-	//I.e. 'n' for on or 'f' for off.
+	//I.e. 'n/N' for on or 'f/F' for off.
 	switch(on_or_off[1])
 	{
-		case 'n' :	//Desired action is to set the channel on.
-		case 'N' :	//Since the second character is 'n', confirm there is no third character.
-			if(on_or_off[2]){exit_usage();}
-			set = TURN_ON;
-			break;
-		case 'f' :	//Desired action is to set the channel on.
-		case 'F' :	//Since the second char is 'f', confirm the third char is also 'f'.
-			if(on_or_off[2] != 'f' && on_or_off[2] != 'F'){exit_usage();}
-			set = TURN_OFF;
-			break;
-		default :	//Bad control argument entered.  Show syntax and exit.
-			exit_usage();
+		//Control argument must be a variation of "on".
+		case 'n':
+		case 'N':	set = TURN_ON;
+				break;
+
+		//Control argument must be a variation of "off".
+		case 'f':
+		case 'F':	set = TURN_OFF;
+				break;
+
+		//Bad control argument entered.  Show syntax and exit.
+		default:	exit_usage();
 	}
 
-	//At this point we know the "channel" variable is a single character.
-	//We are expecting it to be A, a, B, b, C, c, D or d.
+	//At this point we know the "channel" variable is a single character:
+	//A, a, B, b, C, c, D or d.
 	//This block will return the value of the pin to be pulsed
 	//(according to pigpio/broadcom numbering) to give the desired control. 
 	switch(channel)
 	{
-		case 'A' :
-		case 'a' :
-			if (set)	{return(CHANNEL_A_ON);}
-			else		{return(CHANNEL_A_OFF);}
-			break;
-		case 'B' :
-		case 'b' :
-			if (set)	{return(CHANNEL_B_ON);}
-			else		{return(CHANNEL_B_OFF);}
-			break;
-		case 'C' :
-		case 'c' :
-			if (set)	{return(CHANNEL_C_ON);}
-			else		{return(CHANNEL_C_OFF);}
-			break;
-		case 'D' :
-		case 'd' :
-			if (set)	{return(CHANNEL_D_ON);}
-			else		{return(CHANNEL_D_OFF);}
-			break;
-		default :               //unexpected char entered
-			exit_usage();
+		case 'A':
+		case 'a':	if (set)	{return(CHANNEL_A_ON);}
+				else		{return(CHANNEL_A_OFF);}
+				break;
+		case 'B':
+		case 'b':	if (set)	{return(CHANNEL_B_ON);}
+				else		{return(CHANNEL_B_OFF);}
+				break;
+		case 'C':
+		case 'c':	if (set)	{return(CHANNEL_C_ON);}
+				else		{return(CHANNEL_C_OFF);}
+				break;
+		case 'D':
+		case 'd':	if (set)	{return(CHANNEL_D_ON);}
+				else		{return(CHANNEL_D_OFF);}
+				break;
+
+               //Unexpected char.  syntax_check() should always prevent this case.
+		default:	exit_usage();
 	}
 	
 	//Should never reach this point.
@@ -137,13 +131,28 @@ int syntax_check(int argc, char* argv[])
 	//(three including the executable).  Else show syntax and exit.
 	if(argc != 3) {return(FAILURE);}
 
-	//Next confirm the second argument representing the desired
-	//channel is a single character.  Else show syntax and exit.
-	if(strlen(ARG_CHANNEL) != 1) {return(FAILURE);}
 
-	//Then confirm the third argument is a string with no more than
-	//three characters.  Else show syntax and exit.
-	if(strlen(ARG_ON_OR_OFF) > 3) {return(FAILURE);}
+	//Check channel (second argument) Should be a single character: A-D or a-d.
+	//First confirm it is a single character..
+	if(strlen(ARG_CHANNEL) != 1) {return(FAILURE);}
+	//Then ensure the single character is A-D or a-d.
+	if(	((ARG_CHANNEL[0] < 'a') || (ARG_CHANNEL[0] > 'd')) &&
+		((ARG_CHANNEL[0] < 'A') || (ARG_CHANNEL[0] > 'D')) ) {return(FAILURE);}
+
+	//Check state argument (third argument). Should be on or off (allowing case variations).
+	//First character should always be 'o' or 'O'.
+	if((ARG_ON_OR_OFF[0] != 'o') && (ARG_ON_OR_OFF[0] != 'O')) {return(FAILURE);}
+	//Now check for acceptable second and third characters.
+	if(strlen(ARG_ON_OR_OFF) == 2)		//2 characters so sould be a variation of "on".
+	{
+		if((ARG_ON_OR_OFF[1] != 'n') && (ARG_ON_OR_OFF[1] != 'N')) {return(FAILURE);}
+	}
+	else if(strlen(ARG_ON_OR_OFF) == 3)	//3 characters so should be a variation of "off".
+	{
+		if(	((ARG_ON_OR_OFF[1] != 'f') && (ARG_ON_OR_OFF[1] != 'F')) ||
+			((ARG_ON_OR_OFF[2] != 'f') && (ARG_ON_OR_OFF[2] != 'F')) ) {return(FAILURE);}
+	}
+	else {return(FAILURE);}			//Fewer than 2 or greater than 3 characters.
 
 	//At this point, syntax check has passed.
 	return(SUCCESS);

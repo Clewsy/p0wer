@@ -3,7 +3,7 @@
 #include <string.h>	//Required for using strlen() (returns string length).
 #include <pigpio.h>	//Required for utilising raspberry pi gpio.
 
-//Definr values of SUCCESS and FAILURE used when checking function returns.
+//Define values of SUCCESS and FAILURE - used when checking function returns.
 #define SUCCESS 0
 #define FAILURE 1
 
@@ -60,14 +60,15 @@ int control_outlet(int pin)
 	//Pulse the selected pin.
 	//Note, gpioWrite returns 0 if OK.
 	//Note, gpioDelay function returns actual delay which should always be >= the requested delay.
-	if(gpioWrite(pin, 1)) {return(FAILURE);}
+	if(gpioWrite(pin, TURN_ON)) {return(FAILURE);}
 	if(gpioDelay(PULSE_DURATION) < PULSE_DURATION) {return(FAILURE);};
-	if(gpioWrite(pin, 0)) {return(FAILURE);}
+	if(gpioWrite(pin, TURN_OFF)) {return(FAILURE);}
 
 	//Pin has successfully been pulsed.
 	return(SUCCESS);
 }
 
+//This function will return the gpio output pin number to be pulsed to achieve the desired control.
 int get_pin(char channel, char* on_or_off)
 {
 	//Initialise integer "set" which will become either TURN_ON (=1) or TURN_OFF (=0).	
@@ -77,12 +78,12 @@ int get_pin(char channel, char* on_or_off)
 	//I.e. 'n/N' for on or 'f/F' for off.
 	switch(on_or_off[1])
 	{
-		//Control argument must be a variation of "on".
+		//Control argument is a variation of "on".
 		case 'n':
 		case 'N':	set = TURN_ON;
 				break;
 
-		//Control argument must be a variation of "off".
+		//Control argument is a variation of "off".
 		case 'f':
 		case 'F':	set = TURN_OFF;
 				break;
@@ -131,9 +132,8 @@ int syntax_check(int argc, char* argv[])
 	//(three including the executable).  Else show syntax and exit.
 	if(argc != 3) {return(FAILURE);}
 
-
-	//Check channel (second argument) Should be a single character: A-D or a-d.
-	//First confirm it is a single character..
+	//Check channel (second argument). Should be a single character: a-d or A-D.
+	//First confirm it is a single character.
 	if(strlen(ARG_CHANNEL) != 1) {return(FAILURE);}
 	//Then ensure the single character is A-D or a-d.
 	if(	((ARG_CHANNEL[0] < 'a') || (ARG_CHANNEL[0] > 'd')) &&
@@ -158,15 +158,16 @@ int syntax_check(int argc, char* argv[])
 	return(SUCCESS);
 }
 
-//Main program loop.  Arguments (argv[]) and number of arguments (argc).
+//Main program loop.
+//argv[] : The user-provided arguments as an array of character arrays.
+//arc: The number of provided arguments as an integer (actual command is included as an argument).
 int main(int argc, char* argv[])
 {
 	//Do a basic syntax check.  Show usage and exit if something unexpected.
 	if(syntax_check(argc, argv)) {exit_usage();}
 
-	//Call the "get_pin" function to determine the desired pin
-	//to be pulsed, then pass it to the "control outlet" function to give
-	//the desired control action.
+	//Call the "get_pin" function to determine the desired pin to be pulsed,
+	//then pass it to the "control outlet" function to give the desired control action.
 	if(control_outlet(get_pin(ARG_CHANNEL[0], ARG_ON_OR_OFF))) {exit(EXIT_FAILURE);}
 
 	return (EXIT_SUCCESS);

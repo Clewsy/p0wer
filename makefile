@@ -24,3 +24,22 @@ all:
 clean:
 	rm -f $(TARGET) *.o
 
+
+#Installation destinations.
+INSTALL_DEST_BIN = /usr/local/sbin/$(TARGET)
+
+#Executing "make install" will carry out the following.
+install: all
+ifneq ($(shell id -u), 0)
+	@echo Must be run as root.  Try: sudo make install
+else
+	install --mode=04755 --owner=root --group=root $(TARGET) $(INSTALL_DEST_BIN)
+endif
+
+#Executing "make uninstall" will carry out the following.
+uninstall:
+ifneq ($(shell id -u), 0)
+	@echo Must be run as root.  Try: sudo make install
+else
+	rm --force $(INSTALL_DEST_BIN)
+endif

@@ -29,14 +29,15 @@
 </html>
 
 <?php
-	$all_channels = array('a','b','c','d');						//define all possible channels.
+	$all_channels = array('a','b','c','d');	// Define all possible channels.
 
-	for($i = 0; $i <= 3; $i++)							//run check for each possible channel
+	for($i = 0; $i <= 3; $i++)		// Run check for each possible channel.
 	{
-		if(isset($_GET[$all_channels[$i]])) {$channel = $all_channels[$i];}	//check if the channel is to be set
+		// Check if the channel is to be set.
+		if(isset($_GET[$all_channels[$i]]))	$channel = $all_channels[$i];
 	}
 			
-	$action = $_GET[$channel];							//determine how the channel should be set
+	$action = $_GET[$channel];	// Determine how the channel should be set.
 
-	exec("./bin/super_p0wer $channel $action");					//execute the command to set the channel
+	exec("p0wer $channel $action");	// Execute the command to set the channel.
 ?>

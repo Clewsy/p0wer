@@ -18,7 +18,7 @@ TARGET = p0wer
 CC = gcc
 
 all:
-	$(CC) $(CFLAGS) $(LDLIBS) $(TARGET).c -o $(TARGET)
+	$(CC) $(TARGET).c $(CFLAGS) -o $(TARGET) $(LDLIBS)
 
 #Executing "make clean" will carry out the following.
 clean:

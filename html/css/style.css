@@ -1,0 +1,25 @@
+body {
+	font-family: monospace;
+	font-size: 12px;
+	color: rgb(150,150,150);
+	background-color: rgb(50,50,50);
+	font-weight: bold;
+}
+
+/*Headings*/
+h1 {	/* rad10 */
+	font-size: 96px;
+	margin: 0px 0px 30px 0px;
+}
+h2 {	/* presets, status */
+	font-size: 48px;
+	margin: 60px 0px 0px 0px;
+}
+
+.button {	/* toggle button */
+	height: 300px;
+}
+input:active {	/* Invert colours while clicked */
+	background-color: black;
+	color: rgb(150,150,150);
+}

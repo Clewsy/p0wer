@@ -1,0 +1,23 @@
+services:
+
+######################################### php app for use by nginx containers
+  php:
+    image: php:fpm
+    container_name: php
+    volumes:
+      - ./html/:/p0wer/html/
+    restart: unless-stopped
+
+######################################### Personal website container clews.pro
+  p0wer:
+    image: nginx
+    container_name: p0wer
+    depends_on:
+      - php
+    ports:
+      - 8080:80
+    volumes:
+      - ./html/:/p0wer/html/
+      - ./conf.d/:/etc/nginx/conf.d/
+    restart: unless-stopped
+

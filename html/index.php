@@ -30,5 +30,49 @@ $action = null;
 			
 //	$action = $_GET[$channel];	// Determine how the channel should be set.
 
-	exec("curl -G -d 'id=0' http://lamp2.lan/rpc/Switch.$action");
+//	exec("curl -G -d 'id=0' http://lamp2.lan/rpc/Switch.$action");
+
+
+
+// Works but want to break out data variables.
+//$url = "http://192.168.1.221/rpc/Switch.Toggle?id=0";
+//$curl_session = curl_init($url);
+//curl_setopt($curl_session, CURLOPT_URL, $url);
+//curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, true);
+
+
+//$url = "http://192.168.1.221/rpc/Switch.Toggle?id=0";
+//$url = "http://lamp2.lan/rpc/Switch.Toggle";
+$post_data = array("id" => "0");
+$url = "http://lamp2.lan/rpc/Switch.Toggle" . '?' . http_build_query($post_data);
+$curl_session = curl_init($url);
+curl_setopt($curl_session, CURLOPT_URL, $url);
+curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, true);
+
+
+
+
+
+
+$response = curl_exec($curl_session);
+
+
+//debugging
+//$info = curl_getinfo($curl_session);
+//$code = curl_getinfo($curl_session, CURLINFO_HTTP_CODE);
+//curl_close($curl_session);
+//
+//echo $response;
+//echo "testy";
+//
+//echo $response.'<br>';
+//echo "<pre>";
+//print_r($info);
+//echo "</pre>";
+//
+//// Get response status code
+//echo "<pre>";
+//print_r($code);
+//echo "</pre>";
+
 ?>

@@ -11,6 +11,12 @@ h1 {	/* rad10 */
 	font-size: 96px;
 	margin: 0px 0px 30px 0px;
 }
+
+a {
+	color: rgb(150,150,150);
+	text-decoration-line: none;
+}
+
 h2 {	/* presets, status */
 	font-size: 48px;
 	margin: 60px 0px 0px 0px;

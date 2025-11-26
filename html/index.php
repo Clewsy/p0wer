@@ -13,7 +13,6 @@
             curl_setopt($curl_session_control, CURLOPT_RETURNTRANSFER, true);
 
             curl_exec($curl_session_control);
-            curl_close($curl_session_control);
         }
     }
 
@@ -28,7 +27,6 @@
             curl_setopt($curl_session_control, CURLOPT_RETURNTRANSFER, true);
 
             curl_exec($curl_session_control);
-            curl_close($curl_session_control);
         }
     }
 
@@ -43,7 +41,6 @@
             curl_setopt($curl_session_control, CURLOPT_RETURNTRANSFER, true);
 
             curl_exec($curl_session_control);
-            curl_close($curl_session_control);
         }
     }
 
@@ -57,7 +54,6 @@
         curl_setopt($curl_session_control, CURLOPT_RETURNTRANSFER, true);
 
         curl_exec($curl_session_control);
-        curl_close($curl_session_control);
     }
 
     // handle the coffee lamp button (lamp1)
@@ -69,26 +65,23 @@
         curl_setopt($curl_session_control, CURLOPT_RETURNTRANSFER, true);
 
         curl_exec($curl_session_control);
-        curl_close($curl_session_control);
     }
 
 
     // get current status of lamps
     for ($lamp = 0; $lamp < NUM_LAMPS; $lamp++) {
-        
+
         $status_url = "http://lamp" . $lamp . ".lan/rpc/Switch.GetStatus?id=0";
 
         $curl_session_status = curl_init($status_url);
         curl_setopt($curl_session_status, CURLOPT_RETURNTRANSFER, true);
-        
+
         $status_json = curl_exec($curl_session_status);
-        curl_close($curl_session_status);
-        
+
         $status = json_decode($status_json, true); //make associative array from json
-        
+
         if ($status['output'])  $lamp_status_colour[$lamp] = "rgb(150,150,150)";
         else                    $lamp_status_colour[$lamp] = "rgb(50,50,50)";
-        
     }
 
 ?>

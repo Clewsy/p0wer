@@ -139,18 +139,18 @@
     <body>
         <table>
             <tr>
-                <?php if ($temp): ?>
-                    <td align="left">
-                        <h1>p0wer</h1>
-                    </td>
-                    <td align="right" style="font-size:50px; padding-right: 50px;">
-                        <p><?=$temp?></p>
-                    </td>
-                <?php else: ?>
-                    <td colspan="2">
-                        <h1>p0wer</h1>
-                <?php endif; ?>
+<?php if ($temp): ?>
+                <td align="left">
+                    <h1>p0wer</h1>
                 </td>
+                <td align="right" style="font-size:50px; padding-right: 50px;">
+                    <p><?=$temp?></p>
+                </td>
+<?php else: ?>
+                <td colspan="2">
+                    <h1>p0wer</h1>
+                </td>
+<?php endif; ?>
             </tr>
             <tr>
                 <td colspan="2">

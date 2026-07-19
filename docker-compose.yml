@@ -8,7 +8,7 @@ services:
       - ./html/:/p0wer/html/
     restart: unless-stopped
 
-######################################### Personal website container clews.pro
+######################################### p0wer webui container
   p0wer:
     image: nginx
     container_name: p0wer
@@ -20,4 +20,3 @@ services:
       - ./html/:/p0wer/html/
       - ./conf.d/:/etc/nginx/conf.d/
     restart: unless-stopped
-

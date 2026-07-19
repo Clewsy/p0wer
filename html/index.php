@@ -2,17 +2,35 @@
 
     define("NUM_LAMPS", 2);
 
+    // error checking - test if lamp/s are present
+    for ($lamp = 0; $lamp < NUM_LAMPS; $lamp++) {
+
+        $lamp_check_url = "http://lamp" . $lamp . ".lan";
+
+        $curl_session_lamp_check = curl_init($lamp_check_url);
+        curl_setopt($curl_session_lamp_check, CURLOPT_RETURNTRANSFER, true);
+
+        curl_exec($curl_session_lamp_check);
+
+        // an element for every lamp - non-zero means error
+        if(!curl_errno($curl_session_lamp_check))   $lamp_error_array[$lamp] = 0;
+        else                                        $lamp_error_array[$lamp] = 1;
+    }
+//    var_dump($lamp_error_array);
+
     // handle the toggle-all power button
     if(isset($_GET['toggle_button_x'])) {
 
         for ($lamp = 0; $lamp < NUM_LAMPS; $lamp++) {
+            if(!$lamp_error_array[$lamp]) {
 
-            $control_url = "http://lamp" . $lamp . ".lan/rpc/Switch.Toggle?id=0";
+                $control_url = "http://lamp" . $lamp . ".lan/rpc/Switch.Toggle?id=0";
 
-            $curl_session_control = curl_init($control_url);
-            curl_setopt($curl_session_control, CURLOPT_RETURNTRANSFER, true);
+                $curl_session_control = curl_init($control_url);
+                curl_setopt($curl_session_control, CURLOPT_RETURNTRANSFER, true);
 
-            curl_exec($curl_session_control);
+                curl_exec($curl_session_control);
+            }
         }
     }
 
@@ -20,13 +38,15 @@
     if(isset($_GET['on_button'])) {
 
         for ($lamp = 0; $lamp < NUM_LAMPS; $lamp++) {
+            if(!$lamp_error_array[$lamp]) {
 
-            $control_url = "http://lamp" . $lamp . ".lan/rpc/Switch.Set?id=0&on=true";
+                $control_url = "http://lamp" . $lamp . ".lan/rpc/Switch.Set?id=0&on=true";
 
-            $curl_session_control = curl_init($control_url);
-            curl_setopt($curl_session_control, CURLOPT_RETURNTRANSFER, true);
+                $curl_session_control = curl_init($control_url);
+                curl_setopt($curl_session_control, CURLOPT_RETURNTRANSFER, true);
 
-            curl_exec($curl_session_control);
+                curl_exec($curl_session_control);
+            }
         }
     }
 
@@ -34,16 +54,17 @@
     if(isset($_GET['off_button'])) {
 
         for ($lamp = 0; $lamp < NUM_LAMPS; $lamp++) {
+            if(!$lamp_error_array[$lamp]) {
 
-            $control_url = "http://lamp" . $lamp . ".lan/rpc/Switch.Set?id=0&on=false";
+                $control_url = "http://lamp" . $lamp . ".lan/rpc/Switch.Set?id=0&on=false";
 
-            $curl_session_control = curl_init($control_url);
-            curl_setopt($curl_session_control, CURLOPT_RETURNTRANSFER, true);
+                $curl_session_control = curl_init($control_url);
+                curl_setopt($curl_session_control, CURLOPT_RETURNTRANSFER, true);
 
-            curl_exec($curl_session_control);
+                curl_exec($curl_session_control);
+            }
         }
     }
-
 
     // handle the couch lamp button (lamp0)
     if(isset($_GET['couch_button_x'])) {
@@ -67,21 +88,26 @@
         curl_exec($curl_session_control);
     }
 
-
-    // get current status of lamps
+    // get current status of lamps and indicate by setting button colour
+    // button colour:   black:      error (lamp offline?)
+    //                  dark grey:  lamp off
+    //                  light grey: lamp on
     for ($lamp = 0; $lamp < NUM_LAMPS; $lamp++) {
+        if ($lamp_error_array[$lamp]) $lamp_status_colour[$lamp] = "rgb(0,0,0)"; // lamp error
+        else {
 
-        $status_url = "http://lamp" . $lamp . ".lan/rpc/Switch.GetStatus?id=0";
+            $status_url = "http://lamp" . $lamp . ".lan/rpc/Switch.GetStatus?id=0";
 
-        $curl_session_status = curl_init($status_url);
-        curl_setopt($curl_session_status, CURLOPT_RETURNTRANSFER, true);
+            $curl_session_status = curl_init($status_url);
+            curl_setopt($curl_session_status, CURLOPT_RETURNTRANSFER, true);
 
-        $status_json = curl_exec($curl_session_status);
+            $status_json = curl_exec($curl_session_status);
 
-        $status = json_decode($status_json, true); //make associative array from json
+            $status = json_decode($status_json, true); //make associative array from json
 
-        if ($status['output'])  $lamp_status_colour[$lamp] = "rgb(150,150,150)";
-        else                    $lamp_status_colour[$lamp] = "rgb(50,50,50)";
+            if ($status['output'])  $lamp_status_colour[$lamp] = "rgb(150,150,150)";
+            else                    $lamp_status_colour[$lamp] = "rgb(50,50,50)";
+        }
     }
 
 ?>

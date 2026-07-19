@@ -110,6 +110,19 @@
         }
     }
 
+    // get temperature
+    $temp_check_url = "http://temp0.lan/temperature";
+
+    $curl_session_temp_check = curl_init($temp_check_url);
+    curl_setopt($curl_session_temp_check, CURLOPT_RETURNTRANSFER, true);
+
+    $temp = curl_exec($curl_session_temp_check);
+
+    if(curl_errno($curl_session_temp_check)) $temp = '';
+    else {
+        $temp = preg_replace('/\s+/', '', $temp); // remove whitespace (newline)
+        $temp = $temp . "°C";
+    }
 ?>
 
 
@@ -124,8 +137,21 @@
     </head>
 
     <body>
-        <h1>p0wer</h1>
         <table>
+            <tr>
+                <?php if ($temp): ?>
+                    <td align="left">
+                        <h1>p0wer</h1>
+                    </td>
+                    <td align="right" style="font-size:50px; padding-right: 50px;">
+                        <p><?=$temp?></p>
+                    </td>
+                <?php else: ?>
+                    <td colspan="2">
+                        <h1>p0wer</h1>
+                <?php endif; ?>
+                </td>
+            </tr>
             <tr>
                 <td colspan="2">
                     <!-- power button - toggles both lamps -->
